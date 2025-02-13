@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guhuza Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .star-rating input {
+            display: none;
+        }
+        .star-rating label {
+            cursor: pointer;
+        }
+        .star-rating label:hover ~ label svg,
+        .star-rating label:hover svg,
+        .star-rating input:checked ~ label svg {
+            fill: #FBBF24;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-2xl font-bold text-gray-900">Guhuza</h1>
+                </div>
+                <div class="flex space-x-4">
+                    <div class="text-sm">
+                        <span class="text-gray-500">Quiz Timer:</span>
+                        <span id="quizTimer" class="ml-2 font-medium">00:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Quiz Container -->
+        <div id="quizContainer" class="space-y-6">
+            <!-- Progress Bar -->
+            <div class="bg-white rounded-lg shadow-sm p-4">
+                <div class="space-y-2">
+                    <div class="flex justify-between text-sm text-gray-600">
+                        <span>Progress</span>
+                        <span id="progressText">Question 1/9</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div id="progressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question Timer -->
+            <div class="bg-white rounded-lg shadow-sm p-4">
+                <div class="text-sm text-gray-500">Time Remaining</div>
+                <div id="questionTimer" class="text-2xl font-bold text-blue-600">30s</div>
+            </div>
+
+            <!-- Quiz Content -->
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <!-- Difficulty Level -->
+                <div class="mb-4">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800" id="difficultyLevel">
+                        Easy - Level 1
+                    </span>
+                </div>
+
+                <!-- Question -->
+                <h2 id="questionText" class="text-xl font-semibold text-gray-900 mb-6"></h2>
+
+                <!-- Answer Options -->
+                <div id="answerOptions" class="space-y-3 mb-6"></div>
+
+                <!-- Feedback Section (Hidden by default) -->
+                <div id="feedbackSection" class="hidden space-y-4 mb-6">
+                    <div id="feedbackText" class="p-4 rounded-lg"></div>
+                    
+                    <!-- Star Rating -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-gray-700">Rate your confidence:</label>
+                        <div class="star-rating flex space-x-1">
+                            <input type="radio" id="star5" name="rating" value="5" />
+                            <label for="star5">
+                                <svg class="w-6 h-6 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                </svg>
+                            </label>
+                            <!-- Repeat for stars 4-1 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="flex justify-between items-center">
+                    <button id="submitAnswer" class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                        Submit Answer
+                    </button>
+                    <button id="nextQuestion" class="px-6 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors hidden">
+                        Next Question
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen (Hidden by default) -->
+        <div id="resultsContainer" class="hidden space-y-6">
+            <div class="bg-white rounded-lg shadow-sm p-6 text-center">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Quiz Complete!</h2>
+                <div class="space-y-4">
+                    <p class="text-lg">Your Score: <span id="finalScore" class="font-bold text-blue-600"></span></p>
+                    <p class="text-lg">Time Taken: <span id="finalTime" class="font-bold"></span></p>
+                    <button id="restartQuiz" class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                        Restart Quiz
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Quiz questions data
+        const quizData = {
+            easy: [
+                {
+                    question: "How long should a professional resume typically be?",
+                    options: ["1 page", "2-3 pages", "As long as necessary", "No limit"],
+                    correct: 0,
+                    explanation: "For most professionals, a concise 1-page resume is ideal as it helps maintain focus on the most relevant information."
+                },
+                {
+                    question: "What is the best time to arrive for a job interview?",
+                    options: ["Right on time", "10-15 minutes early", "30 minutes early", "5 minutes late"],
+                    correct: 1,
+                    explanation: "Arriving 10-15 minutes early shows punctuality while not being too early to inconvenience the interviewer."
+                }
+            ],
+            medium: [
+                {
+                    question: "Which programming language is most commonly used for web development?",
+                    options: ["JavaScript", "Python", "Java", "C++"],
+                    correct: 0,
+                    explanation: "JavaScript is the most widely used programming language for web development, as it's essential for frontend interactivity."
+                },
+                {
+                    question: "What is the primary purpose of a CSS preprocessor?",
+                    options: ["To minify code", "To add programming features to CSS", "To compress images", "To validate HTML"],
+                    correct: 1,
+                    explanation: "CSS preprocessors extend CSS with additional features like variables, nesting, and mixins to make styling more maintainable."
+                }
+            ],
+            hard: [
+                {
+                    question: "What is the time complexity of quicksort in the worst case?",
+                    options: ["O(n)", "O(n log n)", "O(n²)", "O(2^n)"],
+                    correct: 2,
+                    explanation: "Quicksort has a worst-case time complexity of O(n²) when the pivot chosen is consistently the smallest or largest element."
+                },
+                {
+                    question: "Which HTTP status code indicates a client-side error?",
+                    options: ["2XX", "3XX", "4XX", "5XX"],
+                    correct: 2,
+                    explanation: "4XX status codes indicate client-side errors, such as 404 (Not Found) or 403 (Forbidden)."
+                }
+            ]
+        };
+
+        // Quiz state
+        let currentQuestion = 0;
+        let currentDifficulty = 'easy';
+        let score = 0;
+        let questionTimer;
+        let quizTimer;
+        let selectedAnswer = null;
+
+        // Initialize quiz
+        function initializeQuiz() {
+            currentQuestion = 0;
+            currentDifficulty = 'easy';
+            score = 0;
+            startQuizTimer();
+            loadQuestion();
+        }
+
+        // Load question
+        function loadQuestion() {
+            const question = getCurrentQuestion();
+            document.getElementById('questionText').textContent = question.question;
+            
+            // Update difficulty level display
+            const level = Math.floor(currentQuestion / 2) + 1;
+            document.getElementById('difficultyLevel').textContent = 
+                `${currentDifficulty.charAt(0).toUpperCase() + currentDifficulty.slice(1)} - Level ${level}`;
+
+            // Create answer options
+            const answerOptions = document.getElementById('answerOptions');
+            answerOptions.innerHTML = '';
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'w-full text-left px-4 py-3 rounded-lg border border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-colors';
+                button.textContent = option;
+                button.onclick = () => selectAnswer(index);
+                answerOptions.appendChild(button);
+            });
+
+            // Reset UI state
+            document.getElementById('feedbackSection').classList.add('hidden');
+            document.getElementById('submitAnswer').classList.remove('hidden');
+            document.getElementById('nextQuestion').classList.add('hidden');
+            
+            // Update progress
+            updateProgress();
+            startQuestionTimer();
+        }
+
+        // Select answer
+        function selectAnswer(index) {
+            selectedAnswer = index;
+            const buttons = document.getElementById('answerOptions').children;
+            Array.from(buttons).forEach((button, i) => {
+                button.classList.remove('bg-blue-600', 'text-white');
+                if (i === index) {
+                    button.classList.add('bg-blue-600', 'text-white');
+                }
+            });
+        }
+
+        // Submit answer
+        function submitAnswer() {
+            if (selectedAnswer === null) return;
+
+            const question = getCurrentQuestion();
+            const isCorrect = selectedAnswer === question.correct;
+            
+            // Show feedback
+            const feedbackSection = document.getElementById('feedbackSection');
+            const feedbackText = document.getElementById('feedbackText');
+            feedbackSection.classList.remove('hidden');
+            
+            if (isCorrect) {
+                score++;
+                feedbackText.className = 'p-4 rounded-lg bg-green-100 text-green-800';
+                feedbackText.textContent = 'Correct! ' + question.explanation;
+            } else {
+                feedbackText.className = 'p-4 rounded-lg bg-red-100 text-red-800';
+                feedbackText.textContent = `Incorrect. The correct answer is "${question.options[question.correct]}". ${question.explanation}`;
+            }
+
+            // Show next question button
+            document.getElementById('submitAnswer').classList.add('hidden');
+            document.getElementById('nextQuestion').classList.remove('hidden');
+            
+            clearInterval(questionTimer);
+        }
+
+        // Next question
+        function nextQuestion() {
+            currentQuestion++;
+            selectedAnswer = null;
+
+            if (currentQuestion % 2 === 0) {
+                if (currentDifficulty === 'easy') currentDifficulty = 'medium';
+                else if (currentDifficulty === 'medium') currentDifficulty = 'hard';
+            }
+
+            if (currentQuestion >= 6) {
+                showResults();
+            } else {
+                loadQuestion();
+            }
+        }
+
+        // Timer functions
+        function startQuestionTimer() {
+            let timeLeft = 30;
+            const timerDisplay = document.getElementById('questionTimer');
+            
+            clearInterval(questionTimer);
+            questionTimer = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft + 's';
+                
+                if (timeLeft <= 0) {
+                    clearInterval(questionTimer);
+                    submitAnswer();
+                }
+            }, 1000);
+        }
+
+        function startQuizTimer() {
+            let seconds = 0;
+            const timerDisplay = document.getElementById('quizTimer');
+            
+            quizTimer = setInterval(() => {
+                seconds++;
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+                timerDisplay.textContent = 
+                    `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        // Helper functions
+        function getCurrentQuestion() {
+            return quizData[currentDifficulty][currentQuestion % 2];
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion) / 6) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = 
+                `Question ${currentQuestion + 1}/6`;
+        }
+
+        function showResults() {
+            document.getElementById('quizContainer').classList.add('hidden');
+            document.getElementById('resultsContainer').classList.remove('hidden');
+            document.getElementById('finalScore').textContent = `${score}/6`;
+            clearInterval(quizTimer);
+            clearInterval(questionTimer);
+        }
+
+        // Event listeners
+        document.getElementById('submitAnswer').addEventListener('click', submitAnswer);
+        document.getElementById('nextQuestion').addEventListener('click', nextQuestion);
+        document.getElementById('restartQuiz').addEventListener('click', () => {
+            document.getElementById('quizContainer').classList.remove('hidden');
+            document.getElementById('resultsContainer').classList.add('hidden');
+            initializeQuiz();
+        });
+
+        // Initialize quiz when page loads
+        initializeQuiz();
+    </script>
+</body>
+</html>
