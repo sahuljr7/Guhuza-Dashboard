@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guhuza Quiz Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#3B82F6',
+                        success: '#22C55E',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-2xl font-bold text-gray-900">Guhuza</h1>
+                </div>
+                <nav class="flex space-x-8">
+                    <a href="#" class="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                    <a href="#" class="text-primary hover:text-primary/80 px-3 py-2 rounded-md text-sm font-medium">Play</a>
+                    <a href="#" class="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Leaderboard</a>
+                    <a href="#" class="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Profile</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Timer Section -->
+        <div class="flex justify-between mb-6">
+            <div class="bg-white rounded-lg shadow-sm p-4 flex-1 mr-4">
+                <div class="text-sm text-gray-500 mb-1">Question Timer</div>
+                <div class="text-2xl font-bold text-primary" id="questionTimer">30s</div>
+            </div>
+            <div class="bg-white rounded-lg shadow-sm p-4 flex-1">
+                <div class="text-sm text-gray-500 mb-1">Quiz Timer</div>
+                <div class="text-2xl font-bold text-gray-900" id="quizTimer">00:00</div>
+            </div>
+        </div>
+
+        <!-- Difficulty Selector -->
+        <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+            <div class="flex items-center space-x-4">
+                <span class="text-sm font-medium text-gray-700">Difficulty:</span>
+                <div class="flex space-x-2">
+                    <button class="px-4 py-2 rounded-md text-sm font-medium bg-primary text-white hover:bg-primary/90 transition-colors">Easy</button>
+                    <button class="px-4 py-2 rounded-md text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors">Medium</button>
+                    <button class="px-4 py-2 rounded-md text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors">Hard</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Content -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-200 rounded-full h-2 mb-6">
+                <div class="bg-primary h-2 rounded-full" style="width: 25%"></div>
+            </div>
+
+            <!-- Question -->
+            <h2 class="text-xl font-semibold text-gray-900 mb-6">Career Quiz</h2>
+            <p class="text-gray-700 mb-6">How long should a professional resume typically be?</p>
+
+            <!-- Answer Options -->
+            <div class="space-y-3 mb-6">
+                <button class="w-full text-left px-4 py-3 rounded-lg border border-gray-200 hover:border-primary hover:bg-blue-50 transition-colors">
+                    1 page
+                </button>
+                <button class="w-full text-left px-4 py-3 rounded-lg border border-gray-200 hover:border-primary hover:bg-blue-50 transition-colors">
+                    2-3 pages
+                </button>
+                <button class="w-full text-left px-4 py-3 rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors">
+                    As long as necessary
+                </button>
+                <button class="w-full text-left px-4 py-3 rounded-lg border border-gray-200 hover:border-primary hover:bg-blue-50 transition-colors">
+                    No limit
+                </button>
+            </div>
+
+            <!-- Feedback -->
+            <div class="text-success text-sm mb-6">
+                Correct! For most professionals, a concise, 1-page resume is ideal.
+            </div>
+
+            <!-- Star Rating -->
+            <div class="flex items-center space-x-1 mb-6">
+                <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                <svg class="w-5 h-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                <svg class="w-5 h-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+            </div>
+
+            <!-- Level Indicator -->
+            <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-500">Level 1</span>
+                <button class="px-6 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors">
+                    Next Question
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Timer functionality
+        function startQuestionTimer(duration) {
+            let timer = duration;
+            const timerDisplay = document.getElementById('questionTimer');
+            
+            const countdown = setInterval(() => {
+                timerDisplay.textContent = timer + 's';
+                timer--;
+
+                if (timer < 0) {
+                    clearInterval(countdown);
+                    timerDisplay.textContent = 'Time\'s up!';
+                }
+            }, 1000);
+        }
+
+        function startQuizTimer() {
+            let seconds = 0;
+            const timerDisplay = document.getElementById('quizTimer');
+            
+            setInterval(() => {
+                seconds++;
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+                timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        // Start timers when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            startQuestionTimer(30);
+            startQuizTimer();
+        });
+    </script>
+</body>
+</html>
